@@ -1,9 +1,13 @@
-- connection: clarity_cambridge
+connection: "clarity_cambridge"
 
-- include: "*.view.lookml"       # include all views in this project
-- include: "*.dashboard.lookml"  # include all dashboards in this project
+# include all views in this project
+include: "*.view"
 
-- explore:  Cambridge_CES
+# include all dashboards in this project
+include: "*.dashboard"
+
+explore: Cambridge_CES {}
+
 # # Select the views that should be a part of this model,
 # # and define the joins that connect them together.
 #

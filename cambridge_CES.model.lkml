@@ -4,7 +4,7 @@ connection: "clarity_cambridge"
 include: "*.view"
 
 # include all dashboards in this project
-include: "*.dashboard"
+
 
 explore: Cambridge_CES {}
 

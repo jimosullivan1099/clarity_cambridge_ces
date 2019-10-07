@@ -7,7 +7,6 @@ view: Cambridge_CES {
        , clients.last_name
        , concat(clients.first_name,' ',clients.last_name) as full_name
        , clients.unique_identifier
-       , clients.ssn
        , client_demographics.gender
        , fn_getPicklistValueName('gender',client_demographics.gender) as gender_text
        , client_demographics.veteran
@@ -49,25 +48,12 @@ view: Cambridge_CES {
        , HPTAssessment.income_childsupport_is
        , HPTAssessment.income_spousal_support_is
        , HPTAssessment.income_other_is
-       , fn_getPicklistValueName('c_hx_of_judgement',COLUMN_GET(HPTAssessment_data.custom_data,'c_hx_of_judgement' AS CHAR(255))) as c_hx_of_judgement
        , COLUMN_GET(HPTAssessment_data.custom_data,'c_calculation_total' AS INTEGER) as c_calculation_total
        , YEAR(NOW()) - YEAR(clients.birth_date) - (DATE_FORMAT(NOW(), '%m%d') < DATE_FORMAT(clients.birth_date, '%m%d')) as age
        , fn_getPicklistValueName('vi_spdat_q1',VIAssessment.vi_spdat_q1) as vi_spdat_q1
        , fn_getPicklistValueName('vi_spdat_q2',VIAssessment.vi_spdat_q2) as vi_spdat_q2
-       , fn_getPicklistValueName('c_emergency_room_3month_count',COLUMN_GET(VIAssessment_data.custom_data,'c_emergency_room_3month_count' AS CHAR(255))) as c_emergency_room_3month_count
        , fn_getPicklistValueName('vi_spdat_q7',VIAssessment.vi_spdat_q7) as vi_spdat_q7
-       , fn_getPicklistValueName('vi_spdat_q22',VIAssessment.vi_spdat_q22) as vi_spdat_q22
-       , fn_getPicklistValueName('vi_spdat_q23',VIAssessment.vi_spdat_q23) as vi_spdat_q23
-       , fn_getPicklistValueName('vi_spdat_q24',VIAssessment.vi_spdat_q24) as vi_spdat_q24
        , fn_getPicklistValueName('vi_spdat_q25',VIAssessment.vi_spdat_q25) as vi_spdat_q25
-       , fn_getPicklistValueName('vi_spdat_q26',VIAssessment.vi_spdat_q26) as vi_spdat_q26
-       , fn_getPicklistValueName('vi_spdat_q27',VIAssessment.vi_spdat_q27) as vi_spdat_q27
-       , fn_getPicklistValueName('vi_spdat_q28',VIAssessment.vi_spdat_q28) as vi_spdat_q28
-       , fn_getPicklistValueName('vi_spdat_q29',VIAssessment.vi_spdat_q29) as vi_spdat_q29
-       , fn_getPicklistValueName('vi_spdat_q30',VIAssessment.vi_spdat_q30) as vi_spdat_q30
-       , fn_getPicklistValueName('vi_spdat_q31',VIAssessment.vi_spdat_q31) as vi_spdat_q31
-       , fn_getPicklistValueName('vi_spdat_q32',VIAssessment.vi_spdat_q32) as vi_spdat_q32
-       , fn_getPicklistValueName('vi_spdat_q33',VIAssessment.vi_spdat_q33) as vi_spdat_q33
        , fn_getPicklistValueName('vi_spdat_q34',VIAssessment.vi_spdat_q34) as vi_spdat_q34
        , fn_getPicklistValueName('vi_spdat_q35',VIAssessment.vi_spdat_q35) as vi_spdat_q35
        , fn_getPicklistValueName('c_alcohol_everyday',COLUMN_GET(VIAssessment_data.custom_data,'c_alcohol_everyday' AS CHAR(255))) as c_alcohol_everyday
@@ -134,21 +120,6 @@ view: Cambridge_CES {
          if(fn_getPicklistValueName('c_recd_past_RRH',COLUMN_GET(HPTAssessment_data.custom_data,'c_recd_past_RRH' AS CHAR(255)))="Client refused" AND COLUMN_GET(HPTAssessment_data.custom_data,'c_calculation_total' AS INTEGER)>4, "B",""),
          if(fn_getPicklistValueName('c_recd_past_RRH',COLUMN_GET(HPTAssessment_data.custom_data,'c_recd_past_RRH' AS CHAR(255)))="Yes, once", "A",""))
          as RRH_priority_level
-       , concat(if(fn_getPicklistValueName('c_homeless_90',COLUMN_GET(HPTAssessment_data.custom_data,'c_homeless_90' AS CHAR(255)))="No" AND COLUMN_GET(HPTAssessment_data.custom_data,'c_calculation_total' AS INTEGER)<3,"H",""),
-         if(fn_getPicklistValueName('c_homeless_90',COLUMN_GET(HPTAssessment_data.custom_data,'c_homeless_90' AS CHAR(255)))="No" AND COLUMN_GET(HPTAssessment_data.custom_data,'c_calculation_total' AS INTEGER)<5 AND COLUMN_GET(HPTAssessment_data.custom_data,'c_calculation_total' AS INTEGER)>2, "G",""),
-         if(fn_getPicklistValueName('c_homeless_90',COLUMN_GET(HPTAssessment_data.custom_data,'c_homeless_90' AS CHAR(255)))="No" AND COLUMN_GET(HPTAssessment_data.custom_data,'c_calculation_total' AS INTEGER)>4, "E",""),
-         if(fn_getPicklistValueName('c_recd_past_RRH',COLUMN_GET(HPTAssessment_data.custom_data,'c_recd_past_RRH' AS CHAR(255)))="No" AND COLUMN_GET(HPTAssessment_data.custom_data,'c_calculation_total' AS INTEGER)<3,"F",""),
-         if(fn_getPicklistValueName('c_recd_past_RRH',COLUMN_GET(HPTAssessment_data.custom_data,'c_recd_past_RRH' AS CHAR(255)))="No" AND COLUMN_GET(HPTAssessment_data.custom_data,'c_calculation_total' AS INTEGER)>2 AND COLUMN_GET(HPTAssessment_data.custom_data,'c_calculation_total' AS INTEGER)<5, "D",""),
-         if(fn_getPicklistValueName('c_recd_past_RRH',COLUMN_GET(HPTAssessment_data.custom_data,'c_recd_past_RRH' AS CHAR(255)))="No" AND COLUMN_GET(HPTAssessment_data.custom_data,'c_calculation_total' AS INTEGER)>4, "C",""),
-         if(fn_getPicklistValueName('c_recd_past_RRH',COLUMN_GET(HPTAssessment_data.custom_data,'c_recd_past_RRH' AS CHAR(255)))="Client doesn't know" AND COLUMN_GET(HPTAssessment_data.custom_data,'c_calculation_total' AS INTEGER)<3,"F",""),
-         if(fn_getPicklistValueName('c_recd_past_RRH',COLUMN_GET(HPTAssessment_data.custom_data,'c_recd_past_RRH' AS CHAR(255)))="Client doesn't know" AND COLUMN_GET(HPTAssessment_data.custom_data,'c_calculation_total' AS INTEGER)>2 AND COLUMN_GET(HPTAssessment_data.custom_data,'c_calculation_total' AS INTEGER)<5, "D",""),
-         if(fn_getPicklistValueName('c_recd_past_RRH',COLUMN_GET(HPTAssessment_data.custom_data,'c_recd_past_RRH' AS CHAR(255)))="Client doesn't know" AND COLUMN_GET(HPTAssessment_data.custom_data,'c_calculation_total' AS INTEGER)>4, "C",""),
-         if(fn_getPicklistValueName('c_recd_past_RRH',COLUMN_GET(HPTAssessment_data.custom_data,'c_recd_past_RRH' AS CHAR(255)))="Client refused" AND COLUMN_GET(HPTAssessment_data.custom_data,'c_calculation_total' AS INTEGER)<3,"F",""),
-         if(fn_getPicklistValueName('c_recd_past_RRH',COLUMN_GET(HPTAssessment_data.custom_data,'c_recd_past_RRH' AS CHAR(255)))="Client refused" AND COLUMN_GET(HPTAssessment_data.custom_data,'c_calculation_total' AS INTEGER)>2 AND COLUMN_GET(HPTAssessment_data.custom_data,'c_calculation_total' AS INTEGER)<5, "D",""),
-         if(fn_getPicklistValueName('c_recd_past_RRH',COLUMN_GET(HPTAssessment_data.custom_data,'c_recd_past_RRH' AS CHAR(255)))="Client refused" AND COLUMN_GET(HPTAssessment_data.custom_data,'c_calculation_total' AS INTEGER)>4, "C",""),
-         if(fn_getPicklistValueName('c_recd_past_RRH',COLUMN_GET(HPTAssessment_data.custom_data,'c_recd_past_RRH' AS CHAR(255)))="Yes, once", "B",""),
-         if(fn_getPicklistValueName('c_recd_past_RRH',COLUMN_GET(HPTAssessment_data.custom_data,'c_recd_past_RRH' AS CHAR(255)))="Yes, more than once", "A",""))
-         as trans_priority_level
        , if(fn_getPicklistValueName('c_recd_past_RRH',COLUMN_GET(HPTAssessment_data.custom_data,'c_recd_past_RRH' AS CHAR(255)))="Yes, more than once" OR COLUMN_GET(HPTAssessment_data.custom_data,'c_calculation_total' AS INTEGER)>4, "A","")
          as psh_priority_level
        , if (fn_getPicklistValueName('health_mental_services',VIAssessment.health_mental_services)="Yes" OR
@@ -404,14 +375,6 @@ view: Cambridge_CES {
   }
 
   #
-  dimension: trans_priority_level {
-    label: "Transitional Housing Priority Level"
-    type: string
-    sql: ${TABLE}.trans_priority_level ;;
-    group_label: "Housing Prioritization Tool"
-  }
-
-  #
   dimension: psh_priority_level {
     label: "Permanent Supportive Housing Priority Level"
     type: string
@@ -463,14 +426,6 @@ view: Cambridge_CES {
     label: "Client Full Name"
     type: string
     sql: ${TABLE}.full_name ;;
-    group_label: "Client Profile"
-  }
-
-  #
-  dimension: ssn {
-    label: "SSN"
-    type: string
-    sql: ${TABLE}.ssn ;;
     group_label: "Client Profile"
   }
 
@@ -743,14 +698,6 @@ view: Cambridge_CES {
   }
 
   #
-  dimension: c_hx_of_judgement {
-    label: "Credit history includes a judgement for debt to a landlord"
-    type: string
-    sql: ${TABLE}.c_hx_of_judgement ;;
-    group_label: "Housing Prioritization Tool"
-  }
-
-  #
   dimension: c_calculation_total {
     label: "Housing Prioritization Tool Score"
     type: number
@@ -799,13 +746,13 @@ view: Cambridge_CES {
     group_label: "VI Assessment"
   }
 
-  #
-  dimension: c_emergency_room_3month_count {
-    label: "Times in an emergency room in the past 3 months"
-    type: string
-    sql: ${TABLE}.c_emergency_room_3month_count ;;
-    group_label: "VI Assessment"
-  }
+  # Removed
+#   dimension: c_emergency_room_3month_count {
+#     label: "Times in an emergency room in the past 3 months"
+#     type: string
+#     sql: ${TABLE}.c_emergency_room_3month_count ;;
+#     group_label: "VI Assessment"
+#   }
 
   #
   dimension: vi_spdat_q7 {
@@ -816,98 +763,10 @@ view: Cambridge_CES {
   }
 
   #
-  dimension: vi_spdat_q22 {
-    label: "Kidney Disease/End Stage Renal Disease or Dialysis"
-    type: string
-    sql: ${TABLE}.vi_spdat_q22 ;;
-    group_label: "VI Assessment"
-  }
-
-  #
-  dimension: vi_spdat_q23 {
-    label: "Frostbite, Hypothermia, or Immersion Foot"
-    type: string
-    sql: ${TABLE}.vi_spdat_q23 ;;
-    group_label: "VI Assessment"
-  }
-
-  #
-  dimension: vi_spdat_q24 {
-    label: "Liver Disease, Cirrhosis, or End-Stage Liver Disease"
-    type: string
-    sql: ${TABLE}.vi_spdat_q24 ;;
-    group_label: "VI Assessment"
-  }
-
-  #
   dimension: vi_spdat_q25 {
     label: "HIV+/AIDS"
     type: string
     sql: ${TABLE}.vi_spdat_q25 ;;
-    group_label: "VI Assessment"
-  }
-
-  #
-  dimension: vi_spdat_q26 {
-    label: "Heat Stroke, Heat Exhaustion"
-    type: string
-    sql: ${TABLE}.vi_spdat_q26 ;;
-    group_label: "VI Assessment"
-  }
-
-  #
-  dimension: vi_spdat_q27 {
-    label: "Heart Disease, Arrhythmia, or Irregular Heartbeat"
-    type: string
-    sql: ${TABLE}.vi_spdat_q27 ;;
-    group_label: "VI Assessment"
-  }
-
-  #
-  dimension: vi_spdat_q28 {
-    label: "Emphysema"
-    type: string
-    sql: ${TABLE}.vi_spdat_q28 ;;
-    group_label: "VI Assessment"
-  }
-
-  #
-  dimension: vi_spdat_q29 {
-    label: "Diabetes"
-    type: string
-    sql: ${TABLE}.vi_spdat_q29 ;;
-    group_label: "VI Assessment"
-  }
-
-  #
-  dimension: vi_spdat_q30 {
-    label: "Asthma"
-    type: string
-    sql: ${TABLE}.vi_spdat_q30 ;;
-    group_label: "VI Assessment"
-  }
-
-  #
-  dimension: vi_spdat_q31 {
-    label: "Cancer"
-    type: string
-    sql: ${TABLE}.vi_spdat_q31 ;;
-    group_label: "VI Assessment"
-  }
-
-  #
-  dimension: vi_spdat_q32 {
-    label: "Hepatitis C"
-    type: string
-    sql: ${TABLE}.vi_spdat_q32 ;;
-    group_label: "VI Assessment"
-  }
-
-  #
-  dimension: vi_spdat_q33 {
-    label: "Tuberculosis"
-    type: string
-    sql: ${TABLE}.vi_spdat_q33 ;;
     group_label: "VI Assessment"
   }
 
